@@ -19,3 +19,11 @@ resource "elastic-beanstalk_bundle" "source" {
   file = abspath("./text.demo.txt")
   fileHash = filemd5(abspath("./text.demo.txt"))
 }
+
+resource "elastic-beanstalk_application_version" "version" {
+  applicationName = "astral-atlas-wildspace-api"
+  sourceBundle = {
+    bucket = elastic-beanstalk_bundle.source.bucket
+    key = elastic-beanstalk_bundle.source.key
+  }
+}

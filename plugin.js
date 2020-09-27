@@ -4,7 +4,7 @@ const { readFile } = require('fs').promises;
 const { basename, join } = require('path');
 const aws = require('aws-sdk');
 const terraform = require('@lukekaalim/terraform-plugin-sdk');
-const { read } = require('fs');
+const crypto = require('crypto');
 
 const provider = terraform.createProvider({
   name: 'elastic-beanstalk',
@@ -85,32 +85,55 @@ const bundle = terraform.createResource({
   },
 })
 
+const createVersionHash = (config) => {
+  const versionHash = crypto.createHash('sha256');
+  versionHash.write(config.applicationName);
+  versionHash.write(config.sourceBundle.bucket);
+  versionHash.write(config.sourceBundle.key);
+  versionHash.end();
+  return versionHash.read().toString('hex').slice(0, 31);
+};
+
 const applicationVersion = terraform.createResource({
   name: 'application_version',
   block: terraform.createSchema({
     applicationName: { type: terraform.types.string, required: true },
-    name: { type: terraform.types.string, required: true },
-    version: { type: terraform.types.string, required: true },
+    sourceBundle: { type: terraform.types.object({
+      bucket: terraform.types.string,
+      key: terraform.types.string
+    }), required: true },
+    version: { type: terraform.types.string, computed: true },
   }),
-  async create({ version, applicationName }) {
+  async plan(provider, state, config, plan) {
+    const version = createVersionHash(config);
+    return {
+      ...config,
+      version,
+    }
+  },
+  async create(providers, config) {
+    const { eb } = providers;
+    const version = createVersionHash(config);
     const params = {
-      ApplicationName: "my-app", 
-      AutoCreateApplication: false, 
-      Description: "my-app-v1", 
-      Process: false, 
+      ApplicationName: config.applicationName,
+      Description: "My App", 
       SourceBundle: {
-       S3Bucket: "my-bucket", 
-       S3Key: "sample.war"
+       S3Bucket: config.sourceBundle.bucket, 
+       S3Key: config.sourceBundle.key
       }, 
-      VersionLabel: "v1"
-     };
-  },
-  async update() {
+      VersionLabel: version,
+    };
 
-  },
-  async delete() {
+    await eb.createApplicationVersion(params).promise();
 
-  }
+    return {
+      ...config,
+      version,
+    };
+  },
+  async update(provider, state, config) {
+    return await this.create(provider, config);
+  },
 });
 
 const plugin = terraform.createPlugin(provider, [applicationVersion, bundle]);
