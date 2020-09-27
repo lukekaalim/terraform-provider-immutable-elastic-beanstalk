@@ -8,8 +8,8 @@ terraform {
 }
 
 provider "elastic-beanstalk" {
-  aws_id = "AKIAWDUWLCCROMYXYHVU"
-  aws_secret = "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"
+  aws_id = ""
+  aws_secret = ""
   aws_region = "ap-southeast-2"
 }
 
