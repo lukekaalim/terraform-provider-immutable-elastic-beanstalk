@@ -1,0 +1,33 @@
+{
+  "name": "@lukekaalim/eb-provider",
+  "version": "0.1.0",
+  "description": "A Terraform Provider for Elastic Beanstalk",
+  "main": "main.js",
+  "scripts": {
+    "test": "node test",
+    "deploy:local": "node build/deploy-local",
+    "build": "pkg main.js --out-path artifacts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukekaalim/eb-provider.git"
+  },
+  "keywords": [
+    "Terraform",
+    "terraform-node-sdk",
+    "elastic-beanstalk"
+  ],
+  "author": "luke@kaal.im",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lukekaalim/eb-provider/issues"
+  },
+  "homepage": "https://github.com/lukekaalim/eb-provider#readme",
+  "dependencies": {
+    "@lukekaalim/terraform-plugin-sdk": "^3.1.2",
+    "aws-sdk": "^2.761.0"
+  },
+  "devDependencies": {
+    "pkg": "^4.4.9"
+  }
+}
