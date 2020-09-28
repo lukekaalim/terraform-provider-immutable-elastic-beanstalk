@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "node test",
-    "deploy:local": "node build/deploy-local"
+    "deploy:local": "node build/deploy-local",
+    "postversion": "git push origin --follow-tags"
   },
   "repository": {
     "type": "git",
