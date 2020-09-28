@@ -17,11 +17,11 @@ artifacts:
 # Binaries
 artifacts/$(mac)/terraform-provider-$(name)_v$(version):
 	mkdir -p artifacts/$(mac);
-	pkg main.js --targets latest-macos-x64 --output $@
+	npx pkg main.js --targets latest-macos-x64 --output $@
 
 artifacts/$(linux)/terraform-provider-$(name)_v$(version):
 	mkdir -p artifacts/$(linux);
-	pkg main.js --targets latest-linux-x64 --output $@
+	npx pkg main.js --targets latest-linux-x64 --output $@
 
 # Archives
 artifacts/terraform-provider-$(name)_$(version)_%.zip: artifacts/%/terraform-provider-$(name)_v$(version)
