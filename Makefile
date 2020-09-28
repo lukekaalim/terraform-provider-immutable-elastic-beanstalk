@@ -1,6 +1,5 @@
 name=elastic-beanstalk
 version=$(shell cat package.json | jq .version -r)
-gpgPassphrase=bothways
 
 linux=linux_amd64
 mac=darwin_amd64
