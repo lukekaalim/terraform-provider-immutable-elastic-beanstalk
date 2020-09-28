@@ -25,6 +25,11 @@ jobs:
       - run: npm ci install
       - run: make all
 
+      - id: vars
+        run: |
+          cat artifacts/name.manifest
+          echo "::set-output name=provider_name::$(cat artifacts/name.manifest)"
+        
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -39,9 +44,45 @@ jobs:
             - Second Change
           draft: false
           prerelease: false
-      
-      - uses: AButler/upload-release-assets@v2.0
+
+      - name: Upload Mac Build
+        id: upload-mac-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: './artifacts/*'
-          release-tag: ${{ github.ref }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/${{ steps.vars.outputs.provider_name }}_darwin_amd64.zip
+          asset_name: ${{ steps.vars.outputs.provider_name }}_darwin_amd64.zip
+          asset_content_type: application/zip
+      - name: Upload Linux Build
+        id: upload-lin-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/${{ steps.vars.outputs.provider_name }}_linux_amd64.zip
+          asset_name: ${{ steps.vars.outputs.provider_name }}_linux_amd64.zip
+          asset_content_type: application/zip
+      
+      - name: Upload SHA256SUM
+        id: upload-sha-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/${{ steps.vars.outputs.provider_name }}_SHA256SUMS
+          asset_name: ${{ steps.vars.outputs.provider_name }}_SHA256SUMS
+          asset_content_type: text/plain
+      - name: Upload Signature
+        id: upload-sig-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/${{ steps.vars.outputs.provider_name }}_SHA256SUMS.sig
+          asset_name: ${{ steps.vars.outputs.provider_name }}_SHA256SUMS.sig
+          asset_content_type: text/plain

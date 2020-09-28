@@ -39,9 +39,12 @@ artifacts/terraform-provider-$(name)_$(version)_SHA256SUMS.sig: artifacts/terraf
 clean:
 	rm -rf artifacts
 
+artifacts/name.manifest:
+	echo terraform-provider-$(name)_$(version) > artifacts/name.manifest
+
 all: \
 	artifacts/terraform-provider-$(name)_$(version)_SHA256SUMS.sig \
   artifacts/terraform-provider-$(name)_$(version)_SHA256SUMS \
-  $(binaries) $(archives)
+  $(binaries) $(archives) artifacts/name.manifest
 
 .PHONY: all clean
