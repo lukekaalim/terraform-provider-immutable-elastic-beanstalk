@@ -1,41 +1,47 @@
 name=elastic-beanstalk
-version=1.0.1
+version=$(shell cat package.json | jq .version -r)
+gpgPassphrase=bothways
 
-macBinaryName=darwin_amd64/terraform-provider-$(name)_v$(version)
-linuxBinaryName=linux_amd64/terraform-provider-$(name)_v$(version)
+linux=linux_amd64
+mac=darwin_amd64
 
-macZipName=terraform-provider-$(name)_$(version)_darwin_amd64.zip
-linuxZipName=terraform-provider-$(name)_$(version)_linux_amd64.zip
+targets=$(mac) $(linux)
+binaries=$(patsubst %, artifacts/%/terraform-provider-$(name)_v$(version), $(targets))
+archives=$(patsubst %, artifacts/terraform-provider-$(name)_$(version)_%.zip, $(targets))
 
-shasumName=terraform-provider-$(name)_$(version)_SHA256SUMS
 sigName=terraform-provider-$(name)_$(version)_SHA256SUMS.sig
 
 artifacts:
 	mkdir -p artifacts;
 
-# MACOS
-artifacts/$(macBinaryName):
+# Binaries
+artifacts/$(mac)/terraform-provider-$(name)_v$(version):
+	mkdir -p artifacts/$(mac);
 	pkg main.js --targets latest-macos-x64 --output $@
 
-artifacts/$(macZipName): artifacts/$(macBinaryName)
-	mkdir -p artifacts/darwin_amd64;
-	cd artifacts/darwin_amd64; zip -r ../$(macZipName) .
-
-# Linux
-artifacts/$(linuxBinaryName):
+artifacts/$(linux)/terraform-provider-$(name)_v$(version):
+	mkdir -p artifacts/$(linux);
 	pkg main.js --targets latest-linux-x64 --output $@
 
-artifacts/$(linuxZipName): artifacts/$(linuxBinaryName)
-	mkdir -p artifacts/linux_amd64;
-	cd artifacts/linux_amd64; zip -r ../$(linuxZipName) .
-	
+# Archives
+artifacts/terraform-provider-$(name)_$(version)_%.zip: artifacts/%/terraform-provider-$(name)_v$(version)
+	cd artifacts/$*; zip -r ../../$@ .
+
 # SHASUMS
-artifacts/$(shasumName): artifacts/$(linuxZipName) artifacts/$(macZipName)
+artifacts/terraform-provider-$(name)_$(version)_SHA256SUMS: $(archives)
 	cd artifacts; shasum -a 256 *.zip > ../$@
 
-artifacts/$(sigName): artifacts/$(shasumName)
-	gpg --detach-sig artifacts/$(shasumName)
+# Signitures
+artifacts/terraform-provider-$(name)_$(version)_SHA256SUMS.sig: artifacts/terraform-provider-$(name)_$(version)_SHA256SUMS
+	gpg --detach-sig $<
+	gpg --verify $@ $<
 
-all: artifacts/$(linuxZipName) artifacts/$(macZipName) artifacts/$(shasumName) artifacts/$(sigName)
+clean:
+	rm -rf artifacts
 
-.PHONY: all
+all: \
+	artifacts/terraform-provider-$(name)_$(version)_SHA256SUMS.sig \
+  artifacts/terraform-provider-$(name)_$(version)_SHA256SUMS \
+  $(binaries) $(archives)
+
+.PHONY: all clean

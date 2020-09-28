@@ -1,12 +1,11 @@
 {
   "name": "@lukekaalim/eb-provider",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "description": "A Terraform Provider for Elastic Beanstalk",
   "main": "main.js",
   "scripts": {
     "test": "node test",
-    "deploy:local": "node build/deploy-local",
-    "build": "pkg main.js --out-path artifacts"
+    "deploy:local": "node build/deploy-local"
   },
   "repository": {
     "type": "git",
