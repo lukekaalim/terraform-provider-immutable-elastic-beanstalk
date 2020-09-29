@@ -6,6 +6,21 @@ const aws = require('aws-sdk');
 const terraform = require('@lukekaalim/terraform-plugin-sdk');
 const crypto = require('crypto');
 
+const createAWSConfig = (aws_profile, aws_id, aws_secret, aws_region) => {
+  if (aws_profile) {
+    const credentials = new aws.SharedIniFileCredentials({ profile: aws_profile });
+    return {
+      credentials,
+      region: aws_region
+    };
+  }
+  return {
+    accessKeyId: aws_id,
+    secretAccessKey: aws_secret,
+    region: aws_region
+  };
+};
+
 const provider = terraform.createProvider({
   name: 'elastic-beanstalk',
   version,
@@ -13,13 +28,11 @@ const provider = terraform.createProvider({
     aws_id:  { type: terraform.types.string, optional: true },
     aws_secret: { type: terraform.types.string, optional: true },
     aws_region: { type: terraform.types.string, optional: true },
+    aws_profile: { type: terraform.types.string, optional: true },
   }),
-  async configure({ aws_id, aws_secret, aws_region = 'ap-southeast-2' }) {
-    const config = new aws.Config({
-      accessKeyId: aws_id,
-      secretAccessKey: aws_secret,
-      region: aws_region
-    });
+  async configure({ aws_profile, aws_id, aws_secret, aws_region = 'ap-southeast-2' }) {
+    const config = new aws.Config(createAWSConfig(aws_profile, aws_id, aws_secret, aws_region));
+    console.log(config);
     const eb = new aws.ElasticBeanstalk(config);
     const s3 = new aws.S3(config);
     return { eb, s3 };
