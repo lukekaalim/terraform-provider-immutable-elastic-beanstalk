@@ -1,5 +1,6 @@
 {
-  "name": "@lukekaalim/eb-provider",
+  "name": "elastic-beanstalk",
+  "private": true,
   "version": "1.2.7",
   "description": "A Terraform Provider for Elastic Beanstalk",
   "main": "main.js",
