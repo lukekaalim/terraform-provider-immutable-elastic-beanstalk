@@ -10,8 +10,8 @@ const provider = terraform.createProvider({
   name: 'elastic-beanstalk',
   version,
   schema: terraform.createSchema({
-    aws_id:  { type: terraform.types.string },
-    aws_secret: { type: terraform.types.string },
+    aws_id:  { type: terraform.types.string, optional: true },
+    aws_secret: { type: terraform.types.string, optional: true },
     aws_region: { type: terraform.types.string, optional: true },
   }),
   async configure({ aws_id, aws_secret, aws_region = 'ap-southeast-2' }) {
@@ -83,7 +83,7 @@ const bundle = terraform.createResource({
   async update(providers, state, config) {
     return await this.create(providers, config);
   },
-})
+});
 
 const createVersionHash = (config) => {
   const versionHash = crypto.createHash('sha256');
