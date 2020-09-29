@@ -1,5 +1,5 @@
-name=elastic-beanstalk
 version=$(shell cat package.json | jq .version -r)
+name=$(shell cat package.json | jq .name -r)
 
 linux=linux_amd64
 mac=darwin_amd64
@@ -7,8 +7,6 @@ mac=darwin_amd64
 targets=$(mac) $(linux)
 binaries=$(patsubst %, artifacts/%/terraform-provider-$(name)_v$(version), $(targets))
 archives=$(patsubst %, artifacts/terraform-provider-$(name)_$(version)_%.zip, $(targets))
-
-sigName=terraform-provider-$(name)_$(version)_SHA256SUMS.sig
 
 artifacts:
 	mkdir -p artifacts;
