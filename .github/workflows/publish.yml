@@ -26,9 +26,7 @@ jobs:
       - run: make all
 
       - id: vars
-        run: |
-          cat artifacts/name.manifest
-          echo "::set-output name=provider_name::$(cat artifacts/name.manifest)"
+        run: echo "::set-output name=provider_name::$(cat artifacts/name.manifest)"
         
       - name: Create Release
         id: create_release
