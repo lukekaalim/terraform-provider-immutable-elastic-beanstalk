@@ -14,6 +14,11 @@ const createAWSConfig = (aws_profile, aws_id, aws_secret, aws_region) => {
       region: aws_region
     };
   }
+  if (!aws_id && !aws_secret) {
+    return {
+      region: aws_region
+    };
+  }
   return {
     accessKeyId: aws_id,
     secretAccessKey: aws_secret,
@@ -49,7 +54,7 @@ const bundle = terraform.createResource({
     key: { type: terraform.types.string, computed: true }
   }),
   async plan(provider, state, config, plan) {
-    const key = join(config.prefix, config.fileHash, basename(config.file));
+    const key = join(config.prefix || '.', config.fileHash, basename(config.file));
     return {
       ...config,
       key,
