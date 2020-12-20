@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/lukekaalim/eb-provider#readme",
   "dependencies": {
-    "@lukekaalim/terraform-plugin-sdk": "^3.1.2",
+    "@lukekaalim/terraform-plugin-sdk": "^4.0.0",
     "aws-sdk": "^2.761.0"
   },
   "devDependencies": {

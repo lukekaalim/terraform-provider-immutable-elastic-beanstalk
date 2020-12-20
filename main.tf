@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     elastic-beanstalk = {
-      source = "luke.kaal.im/plugins/elastic-beanstalk"
+      source = "local/lukekaalim/elastic-beanstalk"
       version = "1.0.0"
     }
   }
