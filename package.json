@@ -1,7 +1,7 @@
 {
   "name": "elastic-beanstalk",
   "private": true,
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A Terraform Provider for Elastic Beanstalk",
   "main": "main.js",
   "scripts": {
