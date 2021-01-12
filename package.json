@@ -13,6 +13,6 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@lukekaalim/terraform-cli": "^0.1.1"
+    "@lukekaalim/terraform-cli": "^0.1.2"
   }
 }
