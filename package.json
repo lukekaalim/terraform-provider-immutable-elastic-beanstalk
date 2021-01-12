@@ -1,34 +1,17 @@
 {
-  "name": "elastic-beanstalk",
   "private": true,
-  "version": "1.5.0",
-  "description": "A Terraform Provider for Elastic Beanstalk",
-  "main": "main.js",
   "scripts": {
-    "test": "node test",
-    "deploy:local": "node build/deploy-local",
-    "postversion": "git push origin --follow-tags"
+    "build": "node-terraform build release"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lukekaalim/eb-provider.git"
-  },
-  "keywords": [
-    "Terraform",
-    "terraform-node-sdk",
-    "elastic-beanstalk"
-  ],
-  "author": "luke@kaal.im",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/lukekaalim/eb-provider/issues"
-  },
-  "homepage": "https://github.com/lukekaalim/eb-provider#readme",
   "dependencies": {
-    "@lukekaalim/terraform-plugin-sdk": "^4.0.0",
-    "aws-sdk": "^2.761.0"
+    "@aws-sdk/client-elastic-beanstalk": "^3.1.0",
+    "@aws-sdk/client-s3": "^3.1.0",
+    "@aws-sdk/credential-provider-node": "^3.1.0",
+    "@lukekaalim/cast": "^1.0.0",
+    "@lukekaalim/terraform-plugin": "^2.4.1",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
-    "pkg": "^4.4.9"
+    "@lukekaalim/terraform-cli": "^0.1.1"
   }
 }

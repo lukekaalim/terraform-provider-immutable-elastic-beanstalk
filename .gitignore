@@ -1,6 +1,7 @@
 node_modules
+release
 .terraform
-artifacts
-*.tfstate*
 *.log
-*demo*
+*.tfstate
+*.backup
+*.zip

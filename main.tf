@@ -1,27 +1,56 @@
 terraform {
   required_providers {
-    elastic-beanstalk = {
-      source = "local/lukekaalim/elastic-beanstalk"
-      version = "1.0.0"
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+    immutable-elastic-beanstalk = {
+      source = "local/lukekaalim/immutable-elastic-beanstalk"
+      version = "0.1.0"
+    }
+    archive = {
+      source = "hashicorp/archive"
+      version = "2.0.0"
     }
   }
 }
 
-provider "elastic-beanstalk" {
-  aws_region = "ap-southeast-2"
+provider "aws" {
+  profile = "personal"
+  region = "ap-southeast-2"
+}
+provider "immutable-elastic-beanstalk" {
+  profile = "personal"
+  region = "ap-southeast-2"
 }
 
-resource "elastic-beanstalk_bundle" "source" {
-  bucket = "tome-beanstalk-sources"
-  prefix = "Wildspace"
-  file = abspath("./text.demo.txt")
-  fileHash = filemd5(abspath("./text.demo.txt"))
+resource "aws_s3_bucket" "b" {
+  bucket_prefix = "luke-test"
 }
 
-resource "elastic-beanstalk_application_version" "version" {
-  applicationName = "astral-atlas-wildspace-api"
-  sourceBundle = {
-    bucket = elastic-beanstalk_bundle.source.bucket
-    key = elastic-beanstalk_bundle.source.key
+data "aws_iam_role" "beanstalk_service" {
+  name = "aws-elasticbeanstalk-service-role"
+}
+
+data "archive_file" "example_app" {
+  type        = "zip"
+  source_dir = "./example_app"
+  output_path = "./2.0.0.zip"
+}
+
+resource "immutable-elastic-beanstalk_application-version" "latest_version" {
+  application_name = aws_elastic_beanstalk_application.test.name
+  source_bucket = aws_s3_bucket.b.bucket
+  archive_path = data.archive_file.example_app.output_path
+}
+
+resource "aws_elastic_beanstalk_application" "test" {
+  name        = "tf-test-name"
+  description = "tf-test-desc"
+
+  appversion_lifecycle {
+    service_role          = data.aws_iam_role.beanstalk_service.arn
+    max_count             = 128
+    delete_source_from_s3 = true
   }
 }
