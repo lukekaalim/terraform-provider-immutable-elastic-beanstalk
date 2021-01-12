@@ -1,6 +1,6 @@
 {
   "type": "immutable-elastic-beanstalk",
   "namespace": "lukekaalim",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "entry": "plugin.js"
 }
