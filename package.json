@@ -9,7 +9,7 @@
     "@aws-sdk/client-s3": "^3.1.0",
     "@aws-sdk/credential-provider-node": "^3.1.0",
     "@lukekaalim/cast": "^1.0.0",
-    "@lukekaalim/terraform-plugin": "^2.4.1",
+    "@lukekaalim/terraform-plugin": "^2.4.2",
     "winston": "^3.3.3"
   },
   "devDependencies": {
